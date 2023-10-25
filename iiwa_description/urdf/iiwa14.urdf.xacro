@@ -4,11 +4,16 @@
   <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
   <!--Import the lbr iiwa macro -->
   <xacro:include filename="$(find iiwa_description)/urdf/iiwa14.xacro"/>
+
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro"/>
+
+  <xacro:include filename="$(find robosense_description)/urdf/RS-16.urdf.xacro"/>
   
   <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
   <xacro:arg name="robot_name" default="iiwa"/>
   <xacro:arg name="origin_xyz" default="0 0 0"/>
   <xacro:arg name="origin_rpy" default="0 0 0"/>
+  <xacro:arg name="gpu" default="false"/>
   
   <!-- Fix to world just for testing -->
   <link name="world"/>
@@ -17,5 +22,13 @@
   <xacro:iiwa14 hardware_interface="$(arg hardware_interface)" robot_name="$(arg robot_name)" parent="world">
     <origin xyz="$(arg origin_xyz)" rpy="$(arg origin_rpy)" />
   </xacro:iiwa14>
+
+  <xacro:sensor_d435 name="$(arg robot_name)_camera" topics_ns="$(arg robot_name)_camera_topic" parent="$(arg robot_name)_link_ee" publish_pointcloud="true">
+    <origin xyz="0.0 0.075 -0.02" rpy="1.57 -1.57 0" />
+  </xacro:sensor_d435>
   
+  <xacro:RS-16 parent="$(arg robot_name)_link_ee" name="$(arg robot_name)_robosense" topic="$(arg robot_name)_robosense_/rs_points" hz="20" samples="900" gpu="$(arg gpu)">
+    <origin xyz="0.01 -0.1 -0.15" rpy="1.57 0 0" />
+  </xacro:RS-16>
+
 </robot>
